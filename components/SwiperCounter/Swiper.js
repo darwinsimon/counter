@@ -17,33 +17,46 @@ class Swiper extends Component {
     super(props, context);
 
     this.state = {
-      count: 0,
+      movement: 0,
     };
 
     this.responderMoved = this.responderMoved.bind(this);
+    this.responderStopped = this.responderStopped.bind(this);
 
     // Create Responder
     this.panResponder = PanResponder.create({
-      onMoveShouldSetPanResponder: this.responderMoved,
+      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponderCapture: () => true,
+      onPanResponderMove: this.responderMoved,
+      onPanResponderRelease: this.responderStopped,
+    });
+  }
+
+  responderStopped(evt, gestureState) {
+    // Reset movement
+    this.setState({
+      movement: 0,
     });
   }
 
   // Calculate movement
-  responderMoved(evt, gestureState) {
+  responderMoved(_, gestureState) {
     const { dy } = gestureState;
-    const { count } = this.state;
+    const { movement } = this.state;
     const { onSwipeDown, onSwipeUp } = this.props;
     const c = Math.floor(dy / 40);
-    if (c > count) {
+    if (c > movement) {
       this.setState({
-        count: c,
+        movement: c,
       });
 
       // Swipe down called
       onSwipeDown();
-    } else if (c < count) {
+    } else if (c < movement) {
       this.setState({
-        count: c,
+        movement: c,
       });
 
       // Swipe up called

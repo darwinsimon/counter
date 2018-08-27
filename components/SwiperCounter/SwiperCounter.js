@@ -54,6 +54,7 @@ export default class SwiperCounter extends PureComponent {
         style={style.counter}
       >
         <Text style={style.counter_text}>{counter}</Text>
+        <Text style={style.description_text}>Swipe up or down</Text>
       </Swiper>
     );
   }
